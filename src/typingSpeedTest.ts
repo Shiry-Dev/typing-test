@@ -1,29 +1,43 @@
 import * as readline from 'readline';
+import fetch from 'node-fetch';
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
-const sentence = 'This is my first typing test';
+const gitHubURL = 'https://raw.githubusercontent.com/Shiry-Dev/typing-test/main/src/typingSpeedTest.ts'
 
-console.log('Welcome to the typing speed test!');
-console.log(`Type the following sentence as quickly and accurately as you can:`);
-console.log('\n' + sentence + '\n');
+const fetchText = async (url: string): Promise<string> => {
+	try {
+		const response = await fetch(url);
+		return await response.text();
+	} catch (error) {
+		console.error('Error fetching text:', error);
+		return '';
+	}
+};
 
-const startTime = Date.now();
+(async () => {
+  const sentence = await fetchText(gitHubURL);
 
-rl.question('Start typing: ', (userInput: string) => {
-  const endTime = Date.now();
-  const timeTaken = (endTime - startTime) / 1000;
+  console.log('Welcome to the typing speed test!');
+  console.log(`Type the following sentence as quickly and accurately as you can:`);
+  console.log('\n' + sentence + '\n');
 
-  const wordsPerMinute = (userInput.length / 5) / (timeTaken / 60);
-  const accuracy = (100 * userInput.split('').filter((char, index) => char === sentence[index]).length) / sentence.length;
+  const startTime = Date.now();
 
-  console.log(`\nTime taken: ${timeTaken.toFixed(2)} seconds`);
-  console.log(`Words per minute: ${wordsPerMinute.toFixed(2)}`);
-  console.log(`Accuracy: ${accuracy.toFixed(2)}%`);
+  rl.question('Start typing: ', (userInput: string) => {
+    const endTime = Date.now();
+    const timeTaken = (endTime - startTime) / 1000;
 
-  rl.close();
-});
+    const wordsPerMinute = (userInput.length / 5) / (timeTaken / 60);
+    const accuracy = (100 * userInput.split('').filter((char, index) => char === sentence[index]).length) / sentence.length;
 
+    console.log(`\nTime taken: ${timeTaken.toFixed(2)} seconds`);
+    console.log(`Words per minute: ${wordsPerMinute.toFixed(2)}`);
+    console.log(`Accuracy: ${accuracy.toFixed(2)}%`);
+
+    rl.close();
+  });
+})();
