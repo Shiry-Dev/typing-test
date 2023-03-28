@@ -1,6 +1,9 @@
-- To build: 
+- To install:
 ```
 yarn install
+```
+- To build: 
+```
 yarn build
 ```
 
